@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NegaPost | Convert Film Negatives to Memories</title>
+    <meta name="description" content="Bring your old film memories back to life. Instantly convert scanned negatives into vibrant positive photographs directly in your browser.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>NegaPost</h1>
+            <p class="subtitle">Brings back the old memories to life</p>
+        </header>
+
+        <main class="main-interface">
+            <section class="viewer-section" id="drop-area">
+                <div class="drop-zone" id="empty-state">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary); margin-bottom: 1rem;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <h3>Drop your negative scan here</h3>
+                    <p style="color: var(--text-dim); margin-top: 0.5rem;">or click to browse files</p>
+                    <input type="file" id="file-input" hidden accept="image/*">
+                </div>
+                
+                <div class="preview-container" id="preview-container">
+                    <canvas id="image-canvas"></canvas>
+                </div>
+            </section>
+
+            <aside class="controls-sidebar">
+                <div class="control-group">
+                    <label>Inversion Mode</label>
+                    <select id="mode" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--glass-border); padding: 0.8rem; border-radius: 8px;">
+                        <option value="color">Color Negative</option>
+                        <option value="bw">Black & White</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Exposure <span id="val-exposure">1.0</span></label>
+                    <input type="range" id="exposure" min="0.5" max="2.0" step="0.05" value="1.0">
+                </div>
+
+                <div class="control-group">
+                    <label>Contrast <span id="val-contrast">1.0</span></label>
+                    <input type="range" id="contrast" min="0.5" max="2.0" step="0.05" value="1.0">
+                </div>
+
+                <div class="control-group">
+                    <label>Orange Mask <span id="val-mask">1.0</span></label>
+                    <input type="range" id="orange-mask" min="0" max="2.0" step="0.05" value="1.0">
+                </div>
+
+                <div class="control-group">
+                    <label>Color Balance (RGB)</label>
+                    <div style="display: grid; gap: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: #ff6b6b; font-weight: bold; width: 1.2rem;">R</span>
+                            <input type="range" id="channel-r" min="0.5" max="2.0" step="0.05" value="1.0" style="flex: 1;">
+                            <span id="val-channel-r" style="font-size: 0.8rem; width: 2rem;">1.0</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: #51cf66; font-weight: bold; width: 1.2rem;">G</span>
+                            <input type="range" id="channel-g" min="0.5" max="2.0" step="0.05" value="1.0" style="flex: 1;">
+                            <span id="val-channel-g" style="font-size: 0.8rem; width: 2rem;">1.0</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="color: #339af0; font-weight: bold; width: 1.2rem;">B</span>
+                            <input type="range" id="channel-b" min="0.5" max="2.0" step="0.05" value="1.0" style="flex: 1;">
+                            <span id="val-channel-b" style="font-size: 0.8rem; width: 2rem;">1.0</span>
+                        </div>
+                    </div>
+
+                <button class="action-btn" id="download-btn">Download Positive Image</button>
+            </aside>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
