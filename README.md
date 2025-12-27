@@ -18,6 +18,8 @@ You can host this application locally using Docker.
    ```bash
    docker-compose up -d --build
    ```
+   *Note: The configuration now mounts your local folder into the container, so any changes you make to `index.html`, `app.js`, or `index.css` will be reflected instantly upon refreshing the page.*
+
 2. Open your browser and navigate to:
    ```
    http://localhost:8080
