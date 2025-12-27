@@ -39,11 +39,30 @@ fileInput.addEventListener('change', (e) => {
     if (e.target.files[0]) handleFile(e.target.files[0]);
 });
 
-[exposureInput, contrastInput, maskInput, modeSelect, rInput, gInput, bInput].forEach(input => {
-    input.addEventListener('input', () => {
+const controls = [
+    { range: exposureInput, num: document.getElementById('num-exposure') },
+    { range: contrastInput, num: document.getElementById('num-contrast') },
+    { range: maskInput, num: document.getElementById('num-mask') },
+    { range: rInput, num: document.getElementById('num-channel-r') },
+    { range: gInput, num: document.getElementById('num-channel-g') },
+    { range: bInput, num: document.getElementById('num-channel-b') }
+];
+
+modeSelect.addEventListener('change', () => {
+    if (originalImage) processImage();
+});
+
+controls.forEach(({ range, num }) => {
+    // Slider -> Number & Process
+    range.addEventListener('input', () => {
+        num.value = range.value;
         if (originalImage) processImage();
-        const valSpan = document.getElementById(`val-${input.id}`);
-        if (valSpan) valSpan.textContent = input.value;
+    });
+
+    // Number -> Slider & Process
+    num.addEventListener('input', () => {
+        range.value = num.value;
+        if (originalImage) processImage();
     });
 });
 
