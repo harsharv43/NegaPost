@@ -20,6 +20,15 @@ const bInput = document.getElementById('channel-b');
 
 // Event Listeners
 dropArea.addEventListener('click', () => fileInput.click());
+
+// Keyboard accessibility for drop zone
+dropArea.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+    }
+});
+
 dropArea.addEventListener('dragover', (e) => {
     e.preventDefault();
     dropArea.style.borderColor = 'var(--primary)';
@@ -29,6 +38,7 @@ dropArea.addEventListener('dragleave', () => {
 });
 dropArea.addEventListener('drop', (e) => {
     e.preventDefault();
+    dropArea.style.borderColor = 'var(--glass-border)';
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
         handleFile(file);
@@ -67,18 +77,77 @@ controls.forEach(({ range, num }) => {
 });
 
 function handleFile(file) {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        showError('Please upload a valid image file (JPEG, PNG, etc.)');
+        return;
+    }
+
+    // Validate file size (limit to 50MB to prevent browser crashes)
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (file.size > maxSize) {
+        showError('Image file is too large. Please upload an image smaller than 50MB.');
+        return;
+    }
+
     const reader = new FileReader();
+
+    reader.onerror = () => {
+        showError('Failed to read the image file. Please try again.');
+    };
+
     reader.onload = (e) => {
         const img = new Image();
+
+        img.onerror = () => {
+            showError('Failed to load the image. The file may be corrupted.');
+        };
+
         img.onload = () => {
+            // Validate image dimensions (prevent extremely large images)
+            const maxDimension = 10000;
+            if (img.width > maxDimension || img.height > maxDimension) {
+                showError(`Image dimensions too large. Maximum ${maxDimension}x${maxDimension} pixels.`);
+                return;
+            }
+
             originalImage = img;
             emptyState.style.display = 'none';
             previewContainer.style.display = 'block';
             processImage();
         };
+
         img.src = e.target.result;
     };
+
     reader.readAsDataURL(file);
+}
+
+function showError(message) {
+    // Create error notification
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-notification';
+    errorDiv.textContent = message;
+    errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ef4444;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+    `;
+
+    document.body.appendChild(errorDiv);
+
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        errorDiv.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => errorDiv.remove(), 300);
+    }, 5000);
 }
 
 function processImage() {
@@ -100,10 +169,10 @@ function processImage() {
 
     // Simplified Orange Mask Removal (Basic heuristic)
     // Film base is usually R: 0.9, G: 0.5, B: 0.2 (normalized)
-    // We adjust these ratios to neutralize the mask
-    const rCorr = 1.0;
-    const gCorr = 0.6 * mask;
-    const bCorr = 0.3 * mask;
+    // We adjust these ratios to neutralize the orange mask
+    // Higher mask values increase the correction strength
+    const ORANGE_MASK_GREEN_FACTOR = 0.5;
+    const ORANGE_MASK_BLUE_FACTOR = 0.2;
 
     for (let i = 0; i < data.length; i += 4) {
         let r = data[i];
@@ -115,11 +184,11 @@ function processImage() {
         g = 255 - g;
         b = 255 - b;
 
-        // 2. Simple color balance for negative mask
+        // 2. Orange mask removal for color negatives
         if (!isBW) {
-            r = r * rCorr;
-            g = g / (0.5 + (0.5 * mask));
-            b = b / (0.2 + (0.3 * mask));
+            // Red channel typically doesn't need correction
+            g = g / (ORANGE_MASK_GREEN_FACTOR + (ORANGE_MASK_GREEN_FACTOR * mask));
+            b = b / (ORANGE_MASK_BLUE_FACTOR + (ORANGE_MASK_BLUE_FACTOR * mask));
         }
 
         // 3. RGB Channel Adjustment (Post-Inversion)
@@ -134,7 +203,7 @@ function processImage() {
         g *= exposure;
         b *= exposure;
 
-        // 4. Contrast
+        // 5. Contrast
         const factor = (259 * (contrast * 255 + 255)) / (255 * (259 - contrast * 255));
         r = factor * (r - 128) + 128;
         g = factor * (g - 128) + 128;

@@ -21,18 +21,19 @@
         </header>
 
         <main class="main-interface">
-            <section class="viewer-section" id="drop-area">
-                <div class="drop-zone" id="empty-state">
+            <section class="viewer-section" id="drop-area" aria-label="Image upload area">
+                <div class="drop-zone" id="empty-state" role="button" tabindex="0"
+                    aria-label="Click or drag to upload negative image">
                     <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
                         stroke-linecap="round" stroke-linejoin="round"
-                        style="color: var(--primary); margin-bottom: 1rem;">
+                        style="color: var(--primary); margin-bottom: 1rem;" aria-hidden="true">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                     </svg>
                     <h3>Drop your negative scan here</h3>
                     <p style="color: var(--text-dim); margin-top: 0.5rem;">or click to browse files</p>
-                    <input type="file" id="file-input" hidden accept="image/*">
+                    <input type="file" id="file-input" hidden accept="image/*" aria-label="Choose image file">
                 </div>
 
                 <div class="preview-container" id="preview-container">
@@ -90,8 +91,10 @@
                             <input type="number" id="num-channel-b" step="0.05" value="1.0" class="mini-input">
                         </div>
                     </div>
+                </div>
 
-                    <button class="action-btn" id="download-btn">Download Positive Image</button>
+                <button class="action-btn" id="download-btn" aria-label="Download processed positive image">Download
+                    Positive Image</button>
             </aside>
         </main>
     </div>

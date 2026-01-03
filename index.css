@@ -150,3 +150,38 @@ canvas {
     display: block;
     margin: 0 auto;
 }
+
+/* Accessibility: Focus states */
+.drop-zone:focus,
+input[type="range"]:focus,
+select:focus,
+.action-btn:focus,
+.mini-input:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Error notification animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
