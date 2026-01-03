@@ -4,7 +4,10 @@ Brings back the old memories to life by converting film negatives into vibrant p
 ## Features
 - **Instant Conversion**: Drag and drop your negative scan to see it inverted immediately.
 - **Color & B/W Support**: properly handles orange masks for color negatives.
+- **RGB Tuning**: Fine-tune specific color channels for perfect balance.
 - **Privacy Focus**: All processing happens locally in your browser; no images are uploaded to any server.
+
+> **Interested in how it works?** Check out [PROCESS.md](./PROCESS.md) for a deep dive into the image processing pipeline.
 
 ## Running Locally with Docker
 
